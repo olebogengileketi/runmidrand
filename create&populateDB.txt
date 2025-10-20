@@ -1,0 +1,429 @@
+--CREATING THE DB
+CREATE DATABASE Runmidrand;
+USE Runmidrand;
+
+-- ADMIN TABLE
+CREATE TABLE admin (
+    adminID VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(250),
+    surname VARCHAR(250),
+    email VARCHAR(250) UNIQUE,
+    password VARCHAR(250),
+    profile_img_url VARCHAR(500)
+);
+
+-- CUSTOMER TABLE
+CREATE TABLE customer (
+    customerID VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(250),
+    surname VARCHAR(250),
+    dob DATE,
+    email VARCHAR(250) UNIQUE,
+    phone_number VARCHAR(20),
+    password VARCHAR(250),
+    profile_img_url VARCHAR(500)
+);
+
+-- NEWSLETTER SUBSCRIBER
+CREATE TABLE newsletter_subscriber (
+    subscriberID VARCHAR(50) PRIMARY KEY,
+    name VARCHAR(250),
+    email VARCHAR(250) UNIQUE
+);
+
+-- PRODUCT TABLE
+CREATE TABLE product (
+    productID INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(250),
+    type VARCHAR(250),
+    description TEXT,
+    price DOUBLE,
+    stock_quantity INT,
+    image_url VARCHAR(500)
+);
+
+-- SERVICE TABLE
+CREATE TABLE service (
+    serviceID INT AUTO_INCREMENT PRIMARY KEY,
+    package_name VARCHAR(250),
+    type VARCHAR(250),
+    description TEXT,
+    price DOUBLE,
+    image_url VARCHAR(500)
+);
+
+-- CART TABLE
+CREATE TABLE cart (
+    cartID INT AUTO_INCREMENT PRIMARY KEY,
+    customerID VARCHAR(50),
+    type VARCHAR(50), -- product or service
+    status VARCHAR(50),
+    FOREIGN KEY (customerID) REFERENCES customer(customerID)
+);
+
+-- PRODUCT CART ITEM
+CREATE TABLE product_cart_item (
+    p_cart_itemID INT AUTO_INCREMENT PRIMARY KEY,
+    cartID INT,
+    productID INT,
+    quantity INT,
+    FOREIGN KEY (cartID) REFERENCES cart(cartID),
+    FOREIGN KEY (productID) REFERENCES product(productID)
+);
+
+-- SERVICE CART ITEM
+CREATE TABLE service_cart_item (
+    s_cart_itemID INT AUTO_INCREMENT PRIMARY KEY,
+    cartID INT,
+    serviceID INT,
+    schedule_date DATETIME,
+    quantity INT,
+    FOREIGN KEY (cartID) REFERENCES cart(cartID),
+    FOREIGN KEY (serviceID) REFERENCES service(serviceID)
+);
+
+-- ORDERS
+CREATE TABLE orders (
+    orderID INT AUTO_INCREMENT PRIMARY KEY,
+    customerID VARCHAR(50),
+    cartID INT,
+    serviceID INT,
+    total_amount DOUBLE,
+    delivery_type VARCHAR(250),
+    status VARCHAR(250),
+    FOREIGN KEY (customerID) REFERENCES customer(customerID),
+    FOREIGN KEY (cartID) REFERENCES cart(cartID),
+    FOREIGN KEY (serviceID) REFERENCES service(serviceID)
+);
+
+-- PAYMENT
+CREATE TABLE payment (
+    paymentID INT AUTO_INCREMENT PRIMARY KEY,
+    orderID INT,
+    amount DOUBLE,
+    price DOUBLE,
+    payment_type VARCHAR(250),
+    status VARCHAR(250),
+    pop_url VARCHAR(500),
+    FOREIGN KEY (orderID) REFERENCES orders(orderID)
+);
+
+-- DELIVERY
+CREATE TABLE delivery (
+    deliveryID INT AUTO_INCREMENT PRIMARY KEY,
+    orderID INT,
+    delivery_type VARCHAR(250),
+    distance DOUBLE,
+    status VARCHAR(250),
+    FOREIGN KEY (orderID) REFERENCES orders(orderID)
+);
+
+-- REVIEW
+CREATE TABLE review (
+    reviewID INT AUTO_INCREMENT PRIMARY KEY,
+    orderID INT,
+    customerID VARCHAR(50),
+    productID INT NULL,
+    serviceID INT NULL,
+    rating INT,
+    comment TEXT,
+    review_date DATETIME,
+    FOREIGN KEY (orderID) REFERENCES orders(orderID),
+    FOREIGN KEY (customerID) REFERENCES customer(customerID),
+    FOREIGN KEY (productID) REFERENCES product(productID),
+    FOREIGN KEY (serviceID) REFERENCES service(serviceID)
+);
+
+-- ADDRESS
+CREATE TABLE address (
+    addressID INT AUTO_INCREMENT PRIMARY KEY,
+    customerID VARCHAR(50),
+    orderID INT,
+    province VARCHAR(250),
+    city VARCHAR(250),
+    street_address VARCHAR(250),
+    apartment VARCHAR(250),
+    FOREIGN KEY (customerID) REFERENCES customer(customerID),
+    FOREIGN KEY (orderID) REFERENCES orders(orderID)
+);
+
+
+
+
+--POPULATING THE DB
+
+
+
+-- ===============================
+-- 5 Admins
+-- ===============================
+INSERT INTO admin (adminID, name, surname, email, password, profile_img_url) VALUES
+('Jon101Doe','Jon','Doe','jon.doe@example.com','password123','uploads/profiles/admin/Jon101Doe.jpg'),
+('Ann102Smi','Ann','Smith','ann.smith@example.com','password123','uploads/profiles/admin/Ann102Smi.jpg'),
+('Leo103Tan','Leo','Tan','leo.tan@example.com','password123','uploads/profiles/admin/Leo103Tan.jpg'),
+('Eva104Lee','Eva','Lee','eva.lee@example.com','password123','uploads/profiles/admin/Eva104Lee.jpg'),
+('Max105Ray','Max','Ray','max.ray@example.com','password123','uploads/profiles/admin/Max105Ray.jpg');
+
+-- ===============================
+-- 5 Products
+-- ===============================
+INSERT INTO product (name, type, description, price, stock_quantity, image_url) VALUES
+('RunMidrand Classic T-Shirt','T-Shirt','Cotton classic t-shirt',15.99,100,'uploads/products/RunMidrand Classic T-Shirt.jpg'),
+('Hoodie Premium','Hoodie','Warm hoodie with logo',35.99,50,'uploads/products/Hoodie Premium.jpg'),
+('Snapback Cap','Cap','Stylish snapback cap',12.99,75,'uploads/products/Snapback Cap.jpg'),
+('Graphic Tee','T-Shirt','Trendy graphic t-shirt',18.99,80,'uploads/products/Graphic Tee.jpg'),
+('Run Midrand Tradition','T-Shirt','Comfortable traditional looking T-shirt',40.99,40,'uploads/products/Run Midrand Tradition.jpg');
+
+-- ===============================
+-- 5 Services
+-- ===============================
+INSERT INTO service (package_name, type, description, price, image_url) VALUES
+('Wedding Photography','Photography','Full wedding photoshoot',500.00,'upload/services/'),
+('Birthday Sound Hire','Sound Hire','PA system & DJ for birthday',200.00,'upload/services/'),
+('Corporate Videography','Videography','Corporate video production',600.00,'upload/services/'),
+('Event Photography','Photography','Event photography package',300.00,'upload/services/'),
+('Music Concert Sound','Sound Hire','Sound hire for concerts',800.00,'upload/services/');
+
+-- ===============================
+-- 10 Customers
+-- ===============================
+INSERT INTO customer (customerID, name, surname, email, phone_number, dob, password, profile_img_url) VALUES
+('kat199512des','Kat','Des','kat.des@example.com','0812345678','1995-12-12','pass123','uploads/profiles/customer/kat199512des.jpg'),
+('leo200103tan','Leo','Tan','leo.tan@example.com','0823456789','2001-03-05','pass123','uploads/profiles/customer/leo200103tan.jpg'),
+('mia199807wan','Mia','Wang','mia.wang@example.com','0834567890','1998-07-22','pass123','uploads/profiles/customer/mia199807wan.jpg'),
+('sam200011lee','Sam','Lee','sam.lee@example.com','0845678901','2000-11-15','pass123','uploads/profiles/customer/sam200011lee.jpg'),
+('ava199905kha','Ava','Khan','ava.khan@example.com','0856789012','1999-05-08','pass123','uploads/profiles/customer/ava199905kha.jpg'),
+('ben200202ali','Ben','Ali','ben.ali@example.com','0867890123','2002-02-14','pass123','uploads/profiles/customer/ben200202ali.jpg'),
+('lily199912smi','Lily','Smith','lily.smith@example.com','0878901234','1999-12-30','pass123','uploads/profiles/customer/lily199912smi.jpg'),
+('noah200107ray','Noah','Ray','noah.ray@example.com','0889012345','2001-07-19','pass123','uploads/profiles/customer/noah200107ray.jpg'),
+('zoe199809lee','Zoe','Lee','zoe.lee@example.com','0890123456','1998-09-25','pass123','uploads/profiles/customer/zoe199809lee.jpg'),
+('ryan200006tan','Ryan','Tan','ryan.tan@example.com','0801234567','2000-06-03','pass123','uploads/profiles/customer/ryan200006tan.jpg');
+
+-- ===============================
+-- CARTS (Each customer has 4 carts)
+-- ===============================
+-- Example for Kat Des
+INSERT INTO cart (cartID, customerID, type, status) VALUES
+(1,'kat199512des','product','Not-Active'),
+(2,'kat199512des','product','Not-Active'),
+(3,'kat199512des','service','Not-Active'),
+(4,'kat199512des','product','Active');
+
+-- Repeat similar 4 carts for each customer (IDs incrementing)
+INSERT INTO cart (cartID, customerID, type, status) VALUES
+(5,'leo200103tan','product','Not-Active'),
+(6,'leo200103tan','product','Not-Active'),
+(7,'leo200103tan','service','Not-Active'),
+(8,'leo200103tan','product','Active'),
+
+(9,'mia199807wan','product','Not-Active'),
+(10,'mia199807wan','product','Not-Active'),
+(11,'mia199807wan','service','Not-Active'),
+(12,'mia199807wan','product','Active'),
+
+(13,'sam200011lee','product','Not-Active'),
+(14,'sam200011lee','product','Not-Active'),
+(15,'sam200011lee','service','Not-Active'),
+(16,'sam200011lee','product','Active'),
+
+(17,'ava199905kha','product','Not-Active'),
+(18,'ava199905kha','product','Not-Active'),
+(19,'ava199905kha','service','Not-Active'),
+(20,'ava199905kha','product','Active'),
+
+(21,'ben200202ali','product','Not-Active'),
+(22,'ben200202ali','product','Not-Active'),
+(23,'ben200202ali','service','Not-Active'),
+(24,'ben200202ali','product','Active'),
+
+(25,'lily199912smi','product','Not-Active'),
+(26,'lily199912smi','product','Not-Active'),
+(27,'lily199912smi','service','Not-Active'),
+(28,'lily199912smi','product','Active'),
+
+(29,'noah200107ray','product','Not-Active'),
+(30,'noah200107ray','product','Not-Active'),
+(31,'noah200107ray','service','Not-Active'),
+(32,'noah200107ray','product','Active'),
+
+(33,'zoe199809lee','product','Not-Active'),
+(34,'zoe199809lee','product','Not-Active'),
+(35,'zoe199809lee','service','Not-Active'),
+(36,'zoe199809lee','product','Active'),
+
+(37,'ryan200006tan','product','Not-Active'),
+(38,'ryan200006tan','product','Not-Active'),
+(39,'ryan200006tan','service','Not-Active'),
+(40,'ryan200006tan','product','Active');
+
+-- ===============================
+-- PRODUCT_CART_ITEM (Assign 2 Not-Active products and 1 Active)
+-- ===============================
+-- Example for Kat Des carts
+INSERT INTO product_cart_item (cartID, productID, quantity) VALUES
+(1,1,2),(1,2,1),
+(2,3,1),(2,4,2),
+(4,5,1);
+
+-- Repeat similarly for other customers (cartID increments, productID cycles 1-5)
+INSERT INTO product_cart_item (cartID, productID, quantity) VALUES
+(5,1,1),(5,2,2),
+(6,3,1),(6,4,1),
+(8,5,2),
+
+(9,1,1),(9,2,2),
+(10,3,1),(10,4,1),
+(12,5,2),
+
+(13,1,1),(13,2,2),
+(14,3,1),(14,4,1),
+(16,5,2),
+
+(17,1,1),(17,2,2),
+(18,3,1),(18,4,1),
+(20,5,2),
+
+(21,1,1),(21,2,2),
+(22,3,1),(22,4,1),
+(24,5,2),
+
+(25,1,1),(25,2,2),
+(26,3,1),(26,4,1),
+(28,5,2),
+
+(29,1,1),(29,2,2),
+(30,3,1),(30,4,1),
+(32,5,2),
+
+(33,1,1),(33,2,2),
+(34,3,1),(34,4,1),
+(36,5,2),
+
+(37,1,1),(37,2,2),
+(38,3,1),(38,4,1),
+(40,5,2);
+
+-- ===============================
+-- SERVICE_CART_ITEM (Assign 1 Not-Active service per customer)
+-- ===============================
+-- Example for Kat Des cart 3
+INSERT INTO service_cart_item (cartID, serviceID, schedule_date, quantity) VALUES
+(3,1,'2025-10-30 10:00:00',1),
+(7,2,'2025-11-05 14:00:00',1),
+(11,3,'2025-11-10 16:00:00',1),
+(15,4,'2025-11-12 11:00:00',1),
+(19,5,'2025-11-20 15:00:00',1),
+(23,1,'2025-11-22 09:00:00',1),
+(27,2,'2025-11-25 13:00:00',1),
+(31,3,'2025-11-28 12:00:00',1),
+(35,4,'2025-12-01 14:00:00',1),
+(39,5,'2025-12-03 10:00:00',1);
+
+-- ===============================
+-- ORDERS (One per Not-Active cart)
+-- ===============================
+
+-- Kat Des: carts 1 (product), 2 (product), 3 (service)
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(1,'kat199512des',1,NULL,49.99,'Standard','Pending'),
+(2,'kat199512des',2,NULL,89.99,'Express','Pending'),
+(3,'kat199512des',3,1,500.00,'Standard','Pending');
+
+-- Leo Tan: carts 5, 6, 7
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(4,'leo200103tan',5,NULL,49.99,'Standard','Pending'),
+(5,'leo200103tan',6,NULL,89.99,'Express','Pending'),
+(6,'leo200103tan',7,2,200.00,'Standard','Pending');
+
+-- Mia Wang: carts 9, 10, 11
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(7,'mia199807wan',9,NULL,49.99,'Standard','Pending'),
+(8,'mia199807wan',10,NULL,89.99,'Express','Pending'),
+(9,'mia199807wan',11,3,600.00,'Standard','Pending');
+
+-- Sam Lee: carts 13, 14, 15
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(10,'sam200011lee',13,NULL,49.99,'Standard','Pending'),
+(11,'sam200011lee',14,NULL,89.99,'Express','Pending'),
+(12,'sam200011lee',15,4,300.00,'Standard','Pending');
+
+-- Ava Khan: carts 17, 18, 19
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(13,'ava199905kha',17,NULL,49.99,'Standard','Pending'),
+(14,'ava199905kha',18,NULL,89.99,'Express','Pending'),
+(15,'ava199905kha',19,5,800.00,'Standard','Pending');
+
+-- Ben Ali: carts 21, 22, 23
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(16,'ben200202ali',21,NULL,49.99,'Standard','Pending'),
+(17,'ben200202ali',22,NULL,89.99,'Express','Pending'),
+(18,'ben200202ali',23,1,500.00,'Standard','Pending');
+
+-- Lily Smith: carts 25, 26, 27
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(19,'lily199912smi',25,NULL,49.99,'Standard','Pending'),
+(20,'lily199912smi',26,NULL,89.99,'Express','Pending'),
+(21,'lily199912smi',27,2,200.00,'Standard','Pending');
+
+-- Noah Ray: carts 29, 30, 31
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(22,'noah200107ray',29,NULL,49.99,'Standard','Pending'),
+(23,'noah200107ray',30,NULL,89.99,'Express','Pending'),
+(24,'noah200107ray',31,3,600.00,'Standard','Pending');
+
+-- Zoe Lee: carts 33, 34, 35
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(25,'zoe199809lee',33,NULL,49.99,'Standard','Pending'),
+(26,'zoe199809lee',34,NULL,89.99,'Express','Pending'),
+(27,'zoe199809lee',35,4,300.00,'Standard','Pending');
+
+-- Ryan Tan: carts 37, 38, 39
+INSERT INTO orders (orderID, customerID, cartID, serviceID, total_amount, delivery_type, status) VALUES
+(28,'ryan200006tan',37,NULL,49.99,'Standard','Pending'),
+(29,'ryan200006tan',38,NULL,89.99,'Express','Pending'),
+(30,'ryan200006tan',39,5,800.00,'Standard','Pending');
+
+
+-- ===============================
+-- ADDRESSES (3 per customer)
+-- ===============================
+INSERT INTO address (customerID, orderID, province, city, street_address, apartment) VALUES
+('kat199512des',1,'Gauteng','Johannesburg','12 Rose Street','101'),
+('kat199512des',2,'Gauteng','Johannesburg','34 Oak Avenue','102'),
+('kat199512des',3,'Gauteng','Johannesburg','56 Pine Road','103'),
+
+('leo200103tan',4,'Western Cape','Cape Town','78 Sea View','201'),
+('leo200103tan',5,'Western Cape','Cape Town','90 Mountain Dr','202'),
+('leo200103tan',6,'Western Cape','Cape Town','23 Sunset Blvd','203'),
+
+('mia199807wan',7,'KwaZulu-Natal','Durban','45 Beach Rd','301'),
+('mia199807wan',8,'KwaZulu-Natal','Durban','67 Hill St','302'),
+('mia199807wan',9,'KwaZulu-Natal','Durban','89 River Rd','303'),
+
+('sam200011lee',10,'Gauteng','Pretoria','12 Church St','401'),
+('sam200011lee',11,'Gauteng','Pretoria','34 Garden Rd','402'),
+('sam200011lee',12,'Gauteng','Pretoria','56 Valley Rd','403'),
+
+('ava199905kha',13,'Eastern Cape','Port Elizabeth','78 Hilltop St','501'),
+('ava199905kha',14,'Eastern Cape','Port Elizabeth','90 Forest Rd','502'),
+('ava199905kha',15,'Eastern Cape','Port Elizabeth','23 Lake St','503'),
+
+('ben200202ali',16,'Gauteng','Johannesburg','12 Market St','601'),
+('ben200202ali',17,'Gauteng','Johannesburg','34 Rose Ave','602'),
+('ben200202ali',18,'Gauteng','Johannesburg','56 Oak Dr','603'),
+
+('lily199912smi',19,'Western Cape','Stellenbosch','78 Vine St','701'),
+('lily199912smi',20,'Western Cape','Stellenbosch','90 Wine Rd','702'),
+('lily199912smi',21,'Western Cape','Stellenbosch','23 Winery Blvd','703'),
+
+('noah200107ray',22,'KwaZulu-Natal','Durban','12 Palm Rd','801'),
+('noah200107ray',23,'KwaZulu-Natal','Durban','34 Ocean Ave','802'),
+('noah200107ray',24,'KwaZulu-Natal','Durban','56 Sunset Blvd','803'),
+
+('zoe199809lee',25,'Gauteng','Johannesburg','78 Maple St','901'),
+('zoe199809lee',26,'Gauteng','Johannesburg','90 Oak St','902'),
+('zoe199809lee',27,'Gauteng','Johannesburg','23 Pine Ave','903'),
+
+('ryan200006tan',28,'Western Cape','Cape Town','12 Mountain Rd','1001'),
+('ryan200006tan',29,'Western Cape','Cape Town','34 River St','1002'),
+('ryan200006tan',30,'Western Cape','Cape Town','56 Forest Ave','1003');

@@ -1,0 +1,100 @@
+<?php
+include 'config/db.php';
+//session_start();
+
+// Simulate a logged-in customer (replace with your real session user)
+//$customerID = $_SESSION['customerID'] ?? 'CUST001';
+
+// 1️⃣ Get the active cart
+$stmt = $pdo->prepare("SELECT cartID FROM cart WHERE customerID = ? AND status = 'active' LIMIT 1");
+$stmt->execute([$customerID]);
+$cart = $stmt->fetch();
+
+if (!$cart) {
+    die("No active cart found.");
+}
+
+$cartID = $cart['cartID'];
+
+// 2️⃣ Recalculate total from product_cart_item + product table
+$stmt = $pdo->prepare("
+    SELECT SUM(p.price * pci.quantity) AS totalAmount
+    FROM product_cart_item pci
+    JOIN product p ON pci.productID = p.productID
+    WHERE pci.cartID = ?
+");
+$stmt->execute([$cartID]);
+$row = $stmt->fetch();
+$calculatedTotal = $row['totalAmount'] ?? 0;
+
+// 3️⃣ (Optional) Compare with submitted total and log difference
+$submittedTotal = $_POST['total_amount'] ?? 0;
+if (abs($submittedTotal - $calculatedTotal) > 0.01) {
+    // totals don't match — could log a warning or reject
+    $calculatedTotal = $calculatedTotal; // trust DB total
+}
+
+// 4️⃣ Insert order record
+$stmt = $pdo->prepare("
+    INSERT INTO orders (orderID, customerID, cartID, total_amount, status, order_date)
+    VALUES (?, ?, ?, ?, 'Pending', NOW())
+");
+$orderID = uniqid('ORD');
+$stmt->execute([$orderID, $customerID, $cartID, $calculatedTotal]);
+
+// 5️⃣ Mark cart as completed
+$pdo->prepare("UPDATE cart SET status = 'completed' WHERE cartID = ?")->execute([$cartID]);
+
+// 6️⃣ Redirect or show success message
+header("Location: order_success.php?orderID=" . $orderID);
+exit();
+
+
+
+
+$customerID = 'ava199905kha';
+// Capture POST data
+$firstName = $_POST['name'];
+$lastName = $_POST['surname'];
+$email = $_POST['email'];
+$phone = $_POST['phone_number'];
+$province = $_POST['province'];
+$city = $_POST['city'];
+$street = $_POST['street_address'];
+$apartment = $_POST['apartment'];
+$shippingMethod = $_POST['shipping_method'];
+$paymentMethod = $_POST['payment_method'];
+$totalAmount = $_POST['total_amount'];
+try {
+    $pdo->beginTransaction();
+
+    // 1️⃣ Insert a new cart (if not already created)
+    $stmt = $pdo->prepare("INSERT INTO cart (customerID, type, status) VALUES (?, 'product', 'active')");
+    $stmt->execute([$customerID]);
+    $cartID = $pdo->lastInsertId();
+
+    // 2️⃣ Insert the order
+    $stmt = $pdo->prepare("INSERT INTO orders (customerID, cartID, total_amount, delivery_type, status) VALUES (?, ?, ?, ?, 'Pending')");
+    $stmt->execute([$customerID, $cartID, $totalAmount, $shippingMethod]);
+    $orderID = $pdo->lastInsertId();
+
+    // 3️⃣ Insert the address
+    $stmt = $pdo->prepare("INSERT INTO address (customerID, orderID, province, city, street_address, apartment) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$customerID, $orderID, $province, $city, $street, $apartment]);
+
+    // 4️⃣ Insert the payment
+    $stmt = $pdo->prepare("INSERT INTO payment (orderID, amount, payment_type, status) VALUES (?, ?, ?, 'Pending')");
+    $stmt->execute([$orderID, $totalAmount, $paymentMethod]);
+
+    $pdo->commit();
+
+    echo "<script>
+        alert('Order placed successfully!');
+        window.location.href='../pages/thank_you.php';
+    </script>";
+
+} catch (Exception $e) {
+    $pdo->rollBack();
+    die("Error: " . $e->getMessage());
+}
+

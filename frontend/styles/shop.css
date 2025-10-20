@@ -1,0 +1,102 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: var(--light-color); /* Custom variable, check if defined elsewhere */
+    color: var(--black-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* CSS Variables for colors and font sizes */
+:root {
+  /* Colors */
+    --white-color: #fff;
+    --black-color: #000000;
+    --primary-color: #EE0202;
+    --secondary-color: #4d81db;
+    --tertiary-color: #FFECDB;
+    --quaternary-color: #fffb00;
+
+  /* Font Size */
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 20px;
+    --font-size-xl: 24px;
+    --font-size-xxl: 32px;
+    --font-size-xxxl: 74px;
+}
+
+/* Banner section styles */
+.banner {
+    width: 100%;
+    height: 400px;
+    background-image: url('../images/products/IMG-20250903-WA0004.jpg'); /* Corrected path */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Improves text readability */
+}
+
+/* Banner heading styles */
+.banner h1{
+    color: white;
+    text-align: center;
+}
+
+/* Filter container styles for select dropdowns */
+.filter_container{
+    display: flex;
+    justify-content: center; /* centers horizontally */
+    align-items: center;     /* optional: centers vertically if needed */
+    gap: 15px;
+    margin: 20px 0;
+    width: 100%;             /* ensures full width for centering */
+}
+
+/* Styles for select elements inside filter container */
+.filter_container select{
+    padding: 8px 12px;
+    border: 1px solid var(--black-color);
+    border-radius: 4px;
+    font-size: var(--font-size-sm);
+    outline: none;
+    transition: border-color 0.25s ease;
+    cursor: pointer;
+}
+
+/* Hover effect for filter container children */
+.filter_container :hover{
+    cursor: pointer;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(238, 2, 2, 0.5);
+}
+
+/* Hover effect for select elements */
+.filter_container select:hover{
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(238, 2, 2, 0.5);
+}
+
+/* Focus effect for select elements */
+.filter_container select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(238, 2, 2, 0.5);
+}
+
+/* Responsive styles for banner on small screens */
+@media (max-width: 768px) {
+    .banner {
+        height: 200px;
+        padding: 20px;
+    }
+    .banner h1 {
+        font-size: var(--font-size-lg);
+        padding: 0 10px;
+    }
+}

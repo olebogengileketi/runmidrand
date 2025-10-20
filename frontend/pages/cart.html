@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="../styles/cart.css">
+    <link rel="stylesheet" href="../styles/Reuseable Styles/navbar.css">
+    <link rel="stylesheet" href="../styles/Reuseable Styles/footer.css">
+
+</head>
+<body>
+    <!--Nav Bar-->
+    <nav class="navbar" id="mainNav" >
+        <div class="navbar-container">
+            <a class="navbar-brand" href="#">
+                <img src="../images/logo-black.png" id="navbar-brand-img" >
+            </a>
+            <!-- Navbar Toggler (using Bootstrap Icons) -->
+            <button class="navbar-toggler" aria-label="Toggle navigation">
+            <i class="bi bi-list"></i>
+            </button>
+           
+            <div class="navbar-collapse">
+                <ul class="navbar-nav-links">
+                    <li class="nav-item"><a class="nav-link" href="#services">HOME</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#portfolio">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#team">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <!-- Settings Icon -->
+                    <li class="nav-item"><a class="nav-link" href="#settings"><i class="bi bi-gear"></i></a></li>
+                    <!-- Cart Icon -->
+                    <li class="nav-item"><a class="nav-link" href="#cart"><i class="bi bi-cart"></i></a></li>
+                </ul>
+                <input type="search" placeholder= "Search for products or services">
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="cart-container" id="cartItems">
+            <div class="empty-cart" id="emptyCart">
+                <h2>Your cart is empty</h2>
+                <p>Add products and services</p>
+                <a href="#" class="shop-btn">Continue Shopping</a>
+            </div>
+        </div>
+        
+        <div class="summary" id="orderSummary" style="display: none;">
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal">R0.00</span>
+            </div>
+            <div class="summary-row summary-total">
+                <span>Estimated Total</span>
+                <span id="total">R0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+
+    </main>
+
+    <!--Footer Section-->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h4>Quick links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h4>Follow Us</h4>
+                <ul class="social-links">
+                    <li><a href="#" target="_blank"><i class="bi bi-facebook"></i> Facebook</a></li>
+                    <li><a href="#" target="_blank"><i class="bi bi-instagram"></i> Instagram</a></li>
+                    <li><a href="#" target="_blank"><i class="bi bi-x"></i> X</a></li>
+                    <li><a href="#" target="_blank"><i class="bi bi-youtube"></i> YouTube</a></li>
+                </ul>
+            </div>
+
+
+            <div class="footer-column">
+                <h4>Subscribe</h4>
+                <p>Simply enter your email below:</p>
+                <form class="subscribe-form">
+                    <input type="email" placeholder="example.one@gmail.com">
+                    <button type="submit">Subscribe</button>
+                </form>
+                <p class="privacy-text">
+                    By subscribing, you agree to receive emails from us and acknowledge our Privacy Policy.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        //Mock data
+        const sampleProducts = [
+            {
+                id: 1,
+                name: 'Classic White T-Shirt',
+                description: '100% cotton, soft and breathable',
+                color: 'Color: White',
+                size: 'M',
+                originalPrice: 249.99,
+                salePrice: 199.99,
+                quantity: 1,
+                image: `<img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80" alt="White T-Shirt">`
+            },
+            {
+                id: 2,
+                name: 'Black Hoodie',
+                description: 'Fleece-lined, comfy and stylish',
+                color: 'Color: Black',
+                size: 'L',
+                originalPrice: 599.99,
+                salePrice: 499.99,
+                quantity: 2,
+                image: `<img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80" alt="White T-Shirt">`
+            },
+            {
+                id: 3,
+                name: 'Running Sneakers',
+                description: 'Lightweight, perfect for daily wear',
+                color: 'Color: Grey',
+                size: '42',
+                originalPrice: 1299.00,
+                salePrice: 1099.00,
+                quantity: 1,
+                image: `<img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80" alt="White T-Shirt">`
+            }
+        ];
+
+        let cartItems = [];
+
+        const cartItemsContainer = document.getElementById('cartItems');
+        const emptyCartMessage = document.getElementById('emptyCart');
+        const orderSummary = document.getElementById('orderSummary');
+        
+        function formatCurrency(amount) {
+            return 'R' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+        
+        function updateCartDisplay() {
+            cartItemsContainer.innerHTML = '';
+            if (cartItems.length === 0) {
+                cartItemsContainer.appendChild(emptyCartMessage);
+                emptyCartMessage.style.display = 'block';
+                orderSummary.style.display = 'none';
+            } else {
+                emptyCartMessage.style.display = 'none';
+                cartItems.forEach(item => {
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'cart-item';
+                    cartItemElement.innerHTML = `
+                        <div class="item-image">${item.image}</div>
+                        <div class="item-details">
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-description">${item.description}</div>
+                            <div class="item-description">${item.color}</div>
+                            <div class="item-size">Size: ${item.size}</div>
+                            <div class="item-controls">
+                                <button class="remove-btn" data-id="${item.id}">Remove</button>
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn minus" data-id="${item.id}">-</button>
+                                    <input type="text" class="quantity-display" value="${item.quantity}" readonly data-id="${item.id}">
+                                    <button class="quantity-btn plus" data-id="${item.id}">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-price">
+                            ${item.originalPrice !== item.salePrice ? 
+                                `<div class="original-price">${formatCurrency(item.originalPrice)}</div>` : ''}
+                            <div class="sale-price">${formatCurrency(item.salePrice)}</div>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemElement);
+                });
+                orderSummary.style.display = 'block';
+                updateOrderSummary();
+            }
+        }
+
+        function updateOrderSummary() {
+            let subtotal = 0;
+            cartItems.forEach(item => {
+                subtotal += item.salePrice * item.quantity;
+            });
+            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('total').textContent = formatCurrency(subtotal);
+        }
+        
+        function addToCart(product) {
+            const existingItem = cartItems.find(item => item.id === product.id);
+            if (existingItem) {
+                if (existingItem.quantity < 10) {
+                    existingItem.quantity++;
+                }
+            } else {
+                cartItems.push({...product});
+            }
+            updateCartDisplay();
+            attachEventListeners();
+        }
+        
+        function removeFromCart(productId) {
+            cartItems = cartItems.filter(item => item.id !== productId);
+            updateCartDisplay();
+            attachEventListeners();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cartItems.find(item => item.id === productId);
+            if (item) {
+                if (change === 'increase' && item.quantity < 10) {
+                    item.quantity++;
+                } else if (change === 'decrease' && item.quantity > 1) {
+                    item.quantity--;
+                }
+                updateCartDisplay();
+                attachEventListeners();
+            }
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    removeFromCart(productId);
+                });
+            });
+            document.querySelectorAll('.quantity-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = parseInt(this.getAttribute('data-id'));
+                    if (this.classList.contains('plus')) {
+                        updateQuantity(productId, 'increase');
+                    } else if (this.classList.contains('minus')) {
+                        updateQuantity(productId, 'decrease');
+                    }
+                });
+            });
+        }
+
+        //Load mock data after short delay
+        setTimeout(() => {
+            sampleProducts.forEach(product => addToCart(product));
+        }, 500);
+
+        updateCartDisplay();
+    </script>
+</body>
+</html>

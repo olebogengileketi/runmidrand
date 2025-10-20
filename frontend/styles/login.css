@@ -1,0 +1,228 @@
+/* Import Poppins font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Apply Poppins font globally */
+}
+
+:root {
+  /* Colors */
+  --white-color: #fff;
+  --black-color: #000000;
+  --primary-color:#EE0202; 
+  --secondary-color: #4d81db ;
+  --tertiary-color :#FFECDB; 
+  --quaternary-color : #fffb00; 
+    
+  /* Font Size */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 24px;
+  --font-size-xxl: 32px;
+  --font-size-xxxl: 74px;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/*------------------------------------------------Form Section Styling------------------------------------------------*/
+.container {
+    display: flex;
+    max-width: 100%;
+    background: var(--white-color);
+    overflow: hidden;
+    height: 100%;
+}
+
+.form-section {
+    flex: 1;
+    padding: 40px 30px;
+    overflow-y: auto;
+    align-content: center;
+}
+.form-section h2 {
+    margin-bottom: 25px;
+    color: var(--black-color);
+}
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: var(--black-color);
+    font-size: 18px;
+}
+
+/* Inputs with only red bottom border */
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"]{
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: none;
+    border-bottom: 2px solid var(--primary-color);
+    border-radius: 0;
+    font-size: 15px;
+    transition: border-color 0.3s;
+    background: transparent;
+}
+
+.input-group input[type="text"]:focus,
+.input-group input[type="email"]:focus,
+.input-group input[type="password"]:focus{
+    border-bottom-color: darkred;
+    outline: none;
+}
+
+/* login button */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+.login-btn:hover {
+    background-color: darkred;
+}
+
+/* google button */
+.google-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--black-color); 
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* space between icon and text */
+}
+
+.google-btn:hover {
+    background-color: #330000; /* darker Google red */
+}
+
+.dont-password-link {
+    display: block;
+    margin-top: 12px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: var(--black-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.dont-password-link:hover {
+    color: darkred;
+    text-decoration: underline;
+}
+
+.form-check {
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--primary-color);
+}
+.form-check input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+.terms-link {
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
+}
+.terms-link:hover {
+    text-decoration: underline;
+}
+.forgot-password-link{
+    color:var(--black-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+.terms-link:hover {
+    text-decoration: underline;
+}
+.image-section {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1555266375-5dfce345342d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cmVkJTIwZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D') center center/cover no-repeat;
+}
+/* Scrollbar for form section if content overflows */
+.form-section::-webkit-scrollbar {
+    width: 6px;
+}
+.form-section::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 3px;
+}
+
+.form-columns {
+    display: flex;
+    gap: 30px;
+}
+
+.left-column,
+.right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Optional: Make sure gender-group stays full width in left column */
+.left-column .gender-group {
+    gap: 20px;
+}
+
+.image-section-content {
+    text-align: center;
+    color:var(--white-color);
+    font-family: 'Poppins', sans-serif
+}
+
+.image-section-img {
+    max-width: 432px;
+    height: auto;
+    transform: scale(1.2);
+}
+
+.image-section p {
+    margin: 0.5rem 0;
+    font-size: 18px;
+}
+.image-section .sign-in a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+.image-section .sign-in a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/*-------------------------------------------------------------------------------------------------------------*/
